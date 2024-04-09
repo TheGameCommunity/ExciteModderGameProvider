@@ -1,4 +1,4 @@
-package com.wildermods.provider.patch;
+package com.thegamecommunity.excite.provider.patch;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.MethodNode;
 import net.fabricmc.loader.impl.game.patch.GamePatch;
 import net.fabricmc.loader.impl.launch.FabricLauncher;
 
-public class LegacyPatch extends GamePatch {
+public class ExciteModderPatch extends GamePatch {
 
 	@Override
 	public void process(FabricLauncher launcher, Function<String, ClassReader> classSource,

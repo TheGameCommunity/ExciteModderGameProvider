@@ -1,4 +1,4 @@
-package com.wildermods.provider.services;
+package com.thegamecommunity.excite.provider.services;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.util.asm.ASM;
 
-import com.wildermods.provider.patch.LegacyPatch;
+import com.thegamecommunity.excite.provider.patch.ExciteModderPatch;
 
 import net.fabricmc.loader.impl.FormattedException;
 import net.fabricmc.loader.impl.game.GameProvider;
@@ -42,9 +42,9 @@ import net.fabricmc.loader.impl.util.log.LogHandler;
 import net.fabricmc.loader.impl.util.log.LogLevel;
 import net.fabricmc.loader.impl.util.version.StringVersion;
 
-public class WildermythGameProvider implements GameProvider {
+public class ExciteModderGameProvider implements GameProvider {
 
-	private static final String[] ENTRYPOINTS = new String[]{"com.worldwalkergames.legacy.LegacyDesktop"};
+	private static final String[] ENTRYPOINTS = new String[]{"com.gamebuster19901.excite.modding.Main"};
 	private static final String[] ASM_ = new String[] {"org.objectweb.asm.Opcodes"};
 	private static final String[] MIXIN = new String[] {"org.spongepowered.asm.mixin.Mixin"};
 	private static final HashSet<String> SENSITIVE_ARGS = new HashSet<String>(Arrays.asList(new String[] {}));
@@ -61,16 +61,16 @@ public class WildermythGameProvider implements GameProvider {
 	
 	private Object crashLogService;
 	
-	private static final GameTransformer TRANSFORMER = new GameTransformer(new LegacyPatch());
+	private static final GameTransformer TRANSFORMER = new GameTransformer(new ExciteModderPatch());
 	
 	@Override
 	public String getGameId() {
-		return "wildermyth";
+		return "excitemodder";
 	}
 
 	@Override
 	public String getGameName() {
-		return "Wildermyth";
+		return "Excite Modder";
 	}
 
 	@Override
@@ -86,9 +86,11 @@ public class WildermythGameProvider implements GameProvider {
 	@Override
 	public Collection<BuiltinMod> getBuiltinMods() {
 		
-		HashMap<String, String> wildermythContactInformation = new HashMap<>();
-		wildermythContactInformation.put("homepage", "https://wildermyth.com/");
-		wildermythContactInformation.put("issues", "https://discord.gg/wildermyth");
+		HashMap<String, String> exciteModderContactInformation = new HashMap<>();
+		
+		exciteModderContactInformation.put("homepage", "https://github.com/TheGameCommunity/ExciteModder");
+		exciteModderContactInformation.put("issues", "https://github.com/TheGameCommunity/ExciteModder/issues");
+		exciteModderContactInformation.put("sources", "https://github.com/TheGameCommunity/ExciteModder");
 		
 		HashMap<String, String> asmContactInformation = new HashMap<>();
 		asmContactInformation.put("homepage", "https://asm.ow2.io/index.html");
@@ -102,17 +104,17 @@ public class WildermythGameProvider implements GameProvider {
 		mixinContactInformation.put("sources", "https://github.com/SpongePowered/Mixin");
 		mixinContactInformation.put("license", "https://github.com/SpongePowered/Mixin/blob/master/LICENSE.txt");
 		
-		BuiltinModMetadata.Builder wildermythMetaData = 
+		BuiltinModMetadata.Builder exciteModderMetaData = 
 				new BuiltinModMetadata.Builder(getGameId(), getNormalizedGameVersion())
 				.setName(getGameName())
-				.addAuthor("Worldwalker Games, LLC.", wildermythContactInformation)
-				.setContact(new ContactInformationImpl(wildermythContactInformation))
-				.setDescription("A procedural storytelling RPG where tactical combat and story decisions will alter your world and reshape your cast of characters.");
+				.addAuthor("Gamebuster", exciteModderContactInformation)
+				.setContact(new ContactInformationImpl(exciteModderContactInformation))
+				.setDescription("A program used to extract files from excitebots.");
 		
 		BuiltinModMetadata.Builder asmMetaData = 
 				new BuiltinModMetadata.Builder("asm", ASM.getApiVersionString())
 				.setName("ASM")
-				.addAuthor("INRIA, France Telecom", wildermythContactInformation)
+				.addAuthor("INRIA, France Telecom", asmContactInformation)
 				.setContact(new ContactInformationImpl(asmContactInformation))
 				.setDescription("ASM is an all purpose Java bytecode manipulation and analysis framework. It can be used to modify existing classes or to dynamically generate classes, directly in binary form.")
 				.addLicense("https://asm.ow2.io/license.html");
@@ -126,7 +128,7 @@ public class WildermythGameProvider implements GameProvider {
 				.addLicense("https://github.com/SpongePowered/Mixin/blob/master/LICENSE.txt");
 		
 		ArrayList<BuiltinMod> builtinMods = new ArrayList<>();
-		builtinMods.add(new BuiltinMod(List.of(gameJar), wildermythMetaData.build()));
+		builtinMods.add(new BuiltinMod(List.of(gameJar), exciteModderMetaData.build()));
 		
 		if(asmJar != null) {
 			builtinMods.add(new BuiltinMod(List.of(asmJar), asmMetaData.build()));
@@ -194,7 +196,7 @@ public class WildermythGameProvider implements GameProvider {
 			String gameJarProperty = System.getProperty(SystemProperties.GAME_JAR_PATH);
 			GameProviderHelper.FindResult result = null;
 			if(gameJarProperty == null) {
-				gameJarProperty = "./wildermyth.jar";
+				gameJarProperty = "./ExciteModder.jar";
 			}
 			if(gameJarProperty != null) {
 				Path path = Paths.get(gameJarProperty);
@@ -301,7 +303,7 @@ public class WildermythGameProvider implements GameProvider {
 		crashLogService = null;
 		
 		try {
-			Class<?> c = Class.forName("com.wildermods.wilderloader.CrashLogService", true, loader);
+			Class<?> c = Class.forName("com.thegamecommunity.excite.loader.CrashLogService", true, loader);
 			Method method = c.getDeclaredMethod("obtain", ClassLoader.class);
 			crashLogService = method.invoke(null, loader);
 		}
@@ -317,10 +319,10 @@ public class WildermythGameProvider implements GameProvider {
 			m.invoke(null, (Object) arguments.toArray());
 		}
 		catch(InvocationTargetException e) {
-			throw new FormattedException("Wildermyth has crashed!", e.getCause());
+			throw new FormattedException("ExciteModder has crashed!", e.getCause());
 		}
 		catch(ReflectiveOperationException e) {
-			throw new FormattedException("Failed to start Wildermyth", e);
+			throw new FormattedException("Failed to start ExciteModder", e);
 		}
 		
 	}
@@ -383,16 +385,7 @@ public class WildermythGameProvider implements GameProvider {
 	}
 	
 	private StringVersion getGameVersion() {
-		File versionFile = new File("./version.txt");
-		try {
-			if(versionFile.exists()) {
-				return new StringVersion(Files.readString(versionFile.toPath()).split(" ")[0]);
-			}
-		}
-		catch(IOException e) {
-			throw new Error("Could not detect wildermyth version");
-		}
-		throw new Error("Could not detect wildermyth version. Missing versions.txt?");
+		return new StringVersion("0");
 	}
 
 }
